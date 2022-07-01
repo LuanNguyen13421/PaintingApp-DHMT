@@ -1,0 +1,134 @@
+﻿using SharpGL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace _19120285_BT3
+{
+    internal class EquilateralPentagon : Shape
+    {
+        // Năm đỉnh của ngũ giác đều tính từ trên xuống
+        private Point topPoint;
+        private Point midLeftPoint;
+        private Point midRightPoint;
+        private Point bottomLeftPoint;
+        private Point bottomRightPoint;
+
+        public EquilateralPentagon(Point _pStart, Point _pEnd)
+        {
+            base.SetPoint(_pStart, _pEnd);
+            // Tìm tâm của hình chữ nhật tạo ra từ 2 điểm đầu vào, đó là tâm của hình tròn ngoại tiếp ngũ giác đều
+            int centerX = (int)Math.Round((_pStart.X + _pEnd.X) * 1.0 / 2);
+            int centerY = (int)Math.Round((_pStart.Y + _pEnd.Y) * 1.0 / 2);
+            // Tìm độ dài ngắn hơn giữa 2 cạnh kề của hình chữ nhật, đó là đường kính của hình tròn ngoại tiếp ngũ giác đều
+            // Từ đó suy ra độ dài tâm tới mỗi đỉnh của ngũ giác đều (bán kính đường tròn ngoại tiếp)
+            int dx = Math.Abs(_pStart.X - _pEnd.X);
+            int dy = Math.Abs(_pStart.Y - _pEnd.Y);
+            int r;
+            if (dx < dy)
+                r = (int)Math.Round(dx * 1.0 / 2);
+            else r = (int)Math.Round(dy * 1.0 / 2);
+            // Góc tạo bởi tâm và 2 đỉnh kề nhau là 72 độ
+            // Nửa góc tạo bởi tâm và 2 đỉnh kề nhau là 36 độ
+            // Đổi giá trị góc sang radian
+            double alpha1 = 36 * Math.PI / 180;
+            double alpha2 = 72 * Math.PI / 180;
+
+            // Gán 5 đỉnh của hình ngũ giác đều khi đã biết tâm, bán kính đường tròn ngoại tiếp
+            topPoint.X = centerX;
+            topPoint.Y = centerY - r;
+
+            midLeftPoint.X = (int)Math.Round(centerX - Math.Sin(alpha2) * r);
+            midLeftPoint.Y = (int)Math.Round(centerY - Math.Cos(alpha2) * r);
+
+            midRightPoint.X = (int)Math.Round(centerX + Math.Sin(alpha2) * r);
+            midRightPoint.Y = (int)Math.Round(centerY - Math.Cos(alpha2) * r);
+
+            bottomLeftPoint.X = (int)Math.Round(centerX - Math.Sin(alpha1) * r);
+            bottomLeftPoint.Y = (int)Math.Round(centerY + Math.Cos(alpha1) * r);
+
+            bottomRightPoint.X = (int)Math.Round(centerX + Math.Sin(alpha1) * r);
+            bottomRightPoint.Y = (int)Math.Round(centerY + Math.Cos(alpha1) * r);
+        }
+
+        public override void SetControlPoint()
+        {
+            int max_x;
+            int max_y;
+            int min_x;
+            int min_y;
+            int mid_x;
+            int mid_y;
+
+            max_x = midRightPoint.X;
+            max_y = bottomRightPoint.Y;
+            min_x = midLeftPoint.X;
+            min_y = topPoint.Y;
+            mid_x = (max_x + min_x) / 2;
+            mid_y = (max_y + min_y) / 2;
+
+            Point point_0 = new Point(mid_x, min_y - 30);
+
+            Point point_1 = new Point(min_x - 10, max_y + 10);
+            Point point_2 = new Point(mid_x, max_y + 10);
+            Point point_3 = new Point(max_x + 10, max_y + 10);
+
+            Point point_4 = new Point(min_x - 10, mid_y);
+            Point point_5 = new Point(max_x + 10, mid_y);
+
+            Point point_6 = new Point(min_x - 10, min_y - 10);
+            Point point_7 = new Point(mid_x, min_y - 10);
+            Point point_8 = new Point(max_x + 10, min_y - 10);
+
+            Point point_9 = new Point(mid_x, mid_y);
+
+            controlPoints.Add(point_0);
+            controlPoints.Add(point_1);
+            controlPoints.Add(point_2);
+            controlPoints.Add(point_3);
+            controlPoints.Add(point_4);
+            controlPoints.Add(point_5);
+            controlPoints.Add(point_6);
+            controlPoints.Add(point_7);
+            controlPoints.Add(point_8);
+            controlPoints.Add(point_9);
+        }
+
+        public override void DrawShape(OpenGL gl)
+        {
+            // Vẽ 5 đoạn thẳng nối 5 đỉnh
+            Shape line1 = new Line(topPoint, midLeftPoint);
+            Shape line2 = new Line(midLeftPoint, bottomLeftPoint);
+            Shape line3 = new Line(bottomLeftPoint, bottomRightPoint);
+            Shape line4 = new Line(bottomRightPoint, midRightPoint);
+            Shape line5 = new Line(midRightPoint, topPoint);
+
+            line1.SetLineWidth(lineWidth);
+            line1.SetBorderColor(borderColor);
+            line1.SetFillingColor(fillingColor);
+            line1.DrawShape(gl);
+
+            line2.SetLineWidth(lineWidth);
+            line2.SetBorderColor(borderColor);
+            line2.SetFillingColor(fillingColor);
+            line2.DrawShape(gl);
+
+            line3.SetLineWidth(lineWidth);
+            line3.SetBorderColor(borderColor);
+            line3.SetFillingColor(fillingColor);
+            line3.DrawShape(gl);
+
+            line4.SetLineWidth(lineWidth);
+            line4.SetBorderColor(borderColor);
+            line4.SetFillingColor(fillingColor);
+            line4.DrawShape(gl);
+
+            line5.SetLineWidth(lineWidth);
+            line5.SetBorderColor(borderColor);
+            line5.SetFillingColor(fillingColor);
+            line5.DrawShape(gl);
+        }
+    }
+}
