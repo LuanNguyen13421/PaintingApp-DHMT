@@ -1,0 +1,6 @@
+# painting-app-DHMT-k19
+Ứng dụng vẽ một số hình cơ bản, đồ án môn Đồ Hoạ Máy Tính.
+Chức năng:
+ - Vẽ các hình cơ bản: đoạn thẳng, vuông, tròn, ...
+ - Di chuyển các hình đã vẽ bằng cách kéo thả.
+ - Thay đổi thông số của hình: độ dày nét vẽ, màu vẽ, ...
